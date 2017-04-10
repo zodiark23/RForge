@@ -1,0 +1,21 @@
+{
+    "name": "r-forge/r-forge",
+    "description": "Simple and elegant framework solution for beginners.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Reyan Celestial Tropia",
+            "email": "reyan2323@gmail.com"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "RForge\\":"src/"
+        }
+    }
+}
