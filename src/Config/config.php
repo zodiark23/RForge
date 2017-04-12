@@ -6,9 +6,11 @@
  */
 class Config{
 
+    /**
+     * Default connection settings
+     */
     public static $connectionOptions = [
                 "host"=>"127.0.0.1",
-                "db"=>"blog",
                 "user"=>"root",
                 "pass"=>"",
                 "charset"=>"utf8",
@@ -21,7 +23,10 @@ class Config{
     public static function getConnection(){
         return self::$connectionOptions;
     }
-
+    /**
+     * Set a connection with a custom settings
+     * @return void
+     */
     public static function setConnection(array $conn_opts){
         self::$connectionOptions = $conn_opts;
     }       
