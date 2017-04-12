@@ -4,11 +4,14 @@
  * Provides various methods for dealing system level schenanigans
  */
 class FileSystem{
-
+    /**
+     * Returns an array of string. 
+     * Which contains the file names under that directory
+     */
     public static function dir($directory){
         $dir = array_diff(scandir($directory), array(".",".."));
-        $list = [];
-        return $list[$directory] = $dir;
+        $list[$directory] = $dir;
+        return $list;
     }
     
 }
