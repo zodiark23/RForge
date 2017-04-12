@@ -1,11 +1,24 @@
 <?php namespace RForge\Directory;
-
+/**
+ * File Operation Class
+ * Provides various methods for dealing system level schenanigans
+ */
 class FileSystem{
 
     public static function dir($directory){
-       var_dump(self::file_get_php_classes($directory));
+        $dir = array_diff(scandir($directory), array(".",".."));
+        $list = [];
+        return $list[$directory] = $dir;
     }
+    
+}
 
+/**
+ * This class is used for fetching class name on a directory
+ * Typically used in searching model architecture.
+ * This class will be tightly coupled on Database Class for creating tables
+ */
+class FileCrawler extends FileSystem{
     public static function file_get_php_classes($filepath) {
         $php_code = file_get_contents($filepath);
         $classes = self::get_php_classes($php_code);
