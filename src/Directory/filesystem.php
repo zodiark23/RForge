@@ -22,13 +22,16 @@ class FileSystem{
  * This class will be tightly coupled on Database Class for creating tables
  */
 class FileCrawler extends FileSystem{
-    public static function file_get_php_classes($filepath) {
+    public static function getClassFromFile($filepath) {
+        if(is_file($filepath))
+        {
         $php_code = file_get_contents($filepath);
         $classes = self::get_php_classes($php_code);
         return $classes;
+        }
     }
 
-    public static function get_php_classes($php_code) {
+    private static function get_php_classes($php_code) {
         $classes = array();
         $tokens = token_get_all($php_code);
         $count = count($tokens);

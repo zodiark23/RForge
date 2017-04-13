@@ -2,6 +2,7 @@
 use RForge\Exception\SystemException;
 use RForge\Database\Connection;
 use RForge\Database\ClassResolver;
+use RForge\Directory\FileCrawler;
 class Database {
     protected $db;
     /**
@@ -43,6 +44,42 @@ class Database {
             $this->connection->exec("USE $databasename");
         } catch (PDOException $e) {
             die("DB ERROR: ". $e->getMessage());
+        }
+    }
+
+    /* ------------------------------------------
+     * |             Load Table                 |
+     * ------------------------------------------
+     * | Load the table from the path given     |
+     * |Namespace is needed. Since directory    |
+     * |cannot find files if we include the     |
+     * |namepace.                               |
+     * | So namespace is loaded from the        |
+     * | Application level when initating       |
+     * |                                        |
+     * | For Example                            |
+     * |----------------------------------------|
+     * |$app = new Application('MyAppNamespace')|
+     * ------------------------------------------ */
+    public function loadTables($pathToModelClass , $namespace){
+        $directory_files = FileCrawler::dir($pathToModelClass);
+        try{
+            
+            foreach($directory_files as $key){
+                    $directory =  key($directory_files);
+                foreach($key as $file_name){
+                    $class = FileCrawler::getClassFromFile($directory.$file_name);
+                    foreach ($class as $class_name) {
+                    $each_class = $namespace.'\\'.$directory.$class_name;
+
+                    // ##### MAKE THE TABLES NOW AFTER FINDING ITS PROPERTIES #####
+                    $this->createTable($each_class);
+                    }
+
+                }
+            }
+        } catch(Exception $e){
+            throw new SystemException("Cannot find directory");
         }
     }
 
