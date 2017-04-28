@@ -2,6 +2,7 @@
 
 use ReflectionClass;
 use ReflectionProperty;
+use RForge\Exception\SystemException;
 /**
  * Table Resolver
  * Converts class into readable array
@@ -13,6 +14,7 @@ class Resolver{
         $resolved = [];
 
         $reflect = new ReflectionClass($classname);
+        if(!$reflect) { throw new SystemException("Unable to resolve this class"); }
         $method = $reflect->getProperties();
 
         foreach($method as $key){
@@ -29,7 +31,7 @@ class Resolver{
         $class = new ResolvedClass();
         $class->className = $reflect->getShortName();
         $class->properties = $resolved;
-
+        
         return $class;
     }
 

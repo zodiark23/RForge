@@ -74,6 +74,8 @@ class Database {
 
                     // ##### MAKE THE TABLES NOW AFTER FINDING ITS PROPERTIES #####
                     $this->createTable($each_class);
+                    // ##### RE-UPDATE STRUCTURE - N/A on prod_mode
+                    $this->updateTableStructure($each_class);
                     }
 
                 }
@@ -85,10 +87,28 @@ class Database {
 
     /**
      * Creates a single table. This function will receive an array of tables to configure
+     * @DEV_MODE is ON
      */
     private function createTable($tableClass){
 
         $z = Resolver::resolve($tableClass);
         $this->connection->exec("CREATE TABLE IF NOT EXISTS ". $z->className ."(". Resolver::toString($z) .")");
     }
+
+
+    /**
+     * Update TABLES with the new structure.
+     * @DEV_MODE is ON
+     */
+     private function updateTableStructure($tableClass){
+         $z = Resolver::resolve($tableClass);
+         echo Resolver::toString($z);
+         $stmt = $this->connection->prepare("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME LIKE '". $z->className ."'");
+         //$stmt = $this->connection->prepare("SHOW COLUMNS FROM ". $z->className);
+         $stmt->execute();
+         $result = $stmt->fetchAll();
+        foreach($result as $row){
+            var_dump($row);
+        }
+     }
 }
