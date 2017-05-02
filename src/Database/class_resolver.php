@@ -54,6 +54,27 @@ class Resolver{
 
         return implode($divider,$string);
     }
+    /** 
+    * Returns an array of column names base on the resolved class
+    */
+    public static function columnList(ResolvedClass $z){
+        $columns = [];
+        foreach($z->properties as $column){
+            array_push($columns,$column['property_name']);
+        }
+        return $columns;
+    }
+
+    /**
+    * Returns array of column names base on the array given from the query on the database.
+    */
+    public static function dbColumnList(array $array){
+         $db_columns = [];
+         foreach($array as $row){
+            array_push($db_columns,$row['Field']);
+        }
+        return $db_columns;
+    }
 }
 
 /**

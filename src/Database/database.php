@@ -3,6 +3,7 @@ use RForge\Exception\SystemException;
 use RForge\Database\Connection;
 use RForge\Database\ClassResolver;
 use RForge\Directory\FileCrawler;
+use RForge\Database\StructureMapper;
 class Database {
     protected $db;
     /**
@@ -101,14 +102,15 @@ class Database {
      * @DEV_MODE is ON
      */
      private function updateTableStructure($tableClass){
-         $z = Resolver::resolve($tableClass);
-         echo Resolver::toString($z);
-         $stmt = $this->connection->prepare("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME LIKE '". $z->className ."'");
-         //$stmt = $this->connection->prepare("SHOW COLUMNS FROM ". $z->className);
-         $stmt->execute();
-         $result = $stmt->fetchAll();
-        foreach($result as $row){
-            var_dump($row);
-        }
+        $z = Resolver::resolve($tableClass);
+        
+        $stmt = $this->connection->prepare("SHOW COLUMNS FROM ". $z->className);
+        $stmt->execute();
+
+        $local_columns = Resolver::columnList($z);
+        $exisiting_columns = Resolver::dbColumnList($stmt->fetchAll());
+       
+        $mapper = new StructureMapper($local_columns, $exisiting_columns);
+        echo "<br>------------------------";
      }
 }
