@@ -9,7 +9,14 @@ This framework is *under development*. Will offer MVC Pattern architecture with 
 ````php
     composer require r-forge/r-forge
 ````
+>Then run this command to generate new autoloader
+````php
+    composer dump-autoload -o
+````
 ### Sample application
+When you completed all the required steps above you can start creating a new application. This is a sample format of your `index.php`. Call the `require_once` line as shown below to load the framework. After that line we need to import the Application class by `use Rforge\Application;`. 
+
+**Known issues** are `$app->setTables(PathToYourModelFolder)` You must set the model with double `\\` this is still a bug and will be patched soon. Like in the example below `$app->setTables('Models\\');` if your classes are located at that directory.
 ````php
     require_once __DIR__."/vendor/autoload.php";
 
@@ -56,7 +63,7 @@ class User{
 You must place these model on a separate folder and should be at the upmost directy. As the `filecrawler` will find other classes on these directory too.
 
  * App
-    * Models
+    * Models <-- This is the path you must put at `setTables` method in application class.
         * user.php <-- User model
         * product.php <-- Product model
     * img
@@ -64,7 +71,7 @@ You must place these model on a separate folder and should be at the upmost dire
     * js
     * index.php
 
-## Application Structure
+## Framework Structure(Developer Reference)
  * src
     * App
     * Config
