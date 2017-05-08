@@ -2,12 +2,14 @@
 
 use ReflectionClass;
 use ReflectionProperty;
+use RForge\Database\StructureMapper;
 use RForge\Exception\SystemException;
 /**
  * Table Resolver
- * Converts class into readable array
+ * `resolve` method Converts class into readable array
+ * > Note : You must call `resolve` first before using its other method.
  * Creates a new class with the array structure
- * This array will be used to structure the Query for creating Table
+ * This array will be used to structure the Query for creating Table or updating Table
  */
 class Resolver{
     static function resolve(string $classname){
@@ -54,6 +56,25 @@ class Resolver{
 
         return implode($divider,$string);
     }
+
+    /**
+     * Generate the query structure for updating
+     */
+    public static function generateUpdateQuery(ResolvedClass $z, StructureMapper $sm){
+        $structure = $sm->structure();
+        $query_string = [];
+        foreach($structure as $key => $value){
+            $one_column_query = $value[0] ." ". Resolver::attr($z, $value[1]);
+            if(strpos($one_column_query,"PRIMARY KEY") !== false){
+                $one_column_query = "DROP PRIMARY KEY , ".$one_column_query;
+            }
+            array_push($query_string, $one_column_query);
+        }
+
+        return implode(" , ",$query_string);
+    }
+
+
     /** 
     * Returns an array of column names base on the resolved class
     */
@@ -74,6 +95,17 @@ class Resolver{
             array_push($db_columns,$row['Field']);
         }
         return $db_columns;
+    }
+    /**
+     * Returns the attribute in respect to the property name
+     * @value is column you wish to retrieve the attribute
+     */
+    private static function attr(ResolvedClass $z, $value = ''){
+        foreach($z->properties as $property){
+            if($property["property_name"] == $value){
+                return implode(" ",$property["metadata"]);
+            }
+        }
     }
 }
 

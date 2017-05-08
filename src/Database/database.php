@@ -111,6 +111,10 @@ class Database {
         $exisiting_columns = Resolver::dbColumnList($stmt->fetchAll());
        
         $mapper = new StructureMapper($local_columns, $exisiting_columns);
-        echo "<br>------------------------";
+        $query_string = Resolver::generateUpdateQuery($z,$mapper);
+        
+        //UPDATING QUERY
+        $stmt = $this->connection->prepare("ALTER TABLE ". $z->className . " " . $query_string);
+        $stmt->execute();
      }
 }
