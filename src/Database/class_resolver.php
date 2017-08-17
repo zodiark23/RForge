@@ -37,6 +37,33 @@ class Resolver{
         return $class;
     }
 
+
+
+    static function self_resolve($classname){
+        $resolved = [];
+
+        $reflect = new ReflectionClass($classname);
+        if(!$reflect) { throw new SystemException("Unable to resolve this class"); }
+        $method = $reflect->getProperties();
+
+        foreach($method as $key){
+            $summary = array();
+            $property = new ReflectionProperty($classname , $key->name);
+            $raw =  str_replace("/","",str_replace("*","",$property->getDocComment()));
+            $dirty = ltrim(rtrim(preg_replace('/\s\s+/', ' ',preg_replace( "/\r|\n/", "", $raw )))); // Clean the white spaces
+            $metadata = array_filter(explode("@",$dirty));
+            $summary["property_name"] = $key->name;
+            $summary["metadata"] = $metadata;
+            array_push($resolved , $summary);
+        }
+        
+        $class = new ResolvedClass();
+        $class->className = $reflect->getShortName();
+        $class->properties = $resolved;
+        
+        return $class;
+    }
+
     /**
      * **NOTE:** Run the resolver first before using this command
      * Converts a class **PROPERTIES** into a string with its meta data 
