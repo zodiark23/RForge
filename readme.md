@@ -7,7 +7,7 @@ This framework is *under development*. Will offer MVC Pattern architecture with 
 ### To start a new project
 > On terminal, navigate to your project's directory and run the following code:
 ````php
-    composer require r-forge/r-forge
+    composer require rforge/rforge
 ````
 >Then run this command to generate new autoloader
 ````php
