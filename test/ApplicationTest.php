@@ -1,7 +1,7 @@
 <?php
-require "vendor/autoload.php";
-require 'src/App/app.php';
-require 'src/Config/config.php';
+require "../vendor/autoload.php";
+require '../src/App/app.php';
+require '../src/Config/config.php';
 use RForge\Application;
 
 /**
