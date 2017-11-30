@@ -54,6 +54,7 @@ class Application {
      * Use the instance of connection this application
      */
     private function startDatabase(){
+        Config::$dbname = $this->database;
         $db = new Database($this->database);
         $db->createDB();
         $db->selectDB();

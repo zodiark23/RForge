@@ -9,7 +9,7 @@ class Database {
     /**
      * This connection is from the static connection
      */
-    protected $connection;
+    public $connection;
     function __construct($dbname = null){
         try{
             if(!$dbname){

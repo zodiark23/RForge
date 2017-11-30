@@ -9,13 +9,15 @@ class Config{
     /**
      * Default connection settings
      */
-    public static $connectionOptions = [
+    private static $connectionOptions = [
                 "host"=>"127.0.0.1",
                 "user"=>"root",
                 "pass"=>"",
                 "charset"=>"utf8",
                 "driver"=>"mysql"
             ];
+
+    public static $dbname;
     /**
      * Return the Configuration for connections
      * @return array
