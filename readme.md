@@ -1,4 +1,4 @@
-# RForge Framework (*on-going*) [![Build Status](https://travis-ci.org/{ORG-or-USERNAME}/{REPO-NAME}.png?branch=master)](https://travis-ci.org/zodiark23/RForge/jobs/309394111)
+# RForge Framework (*on-going*) [![Build Status](https://travis-ci.org/zodiark23/RForge.png?branch=default_branch)](https://travis-ci.org/zodiark23/RForge)
 
 The idea is to create an easy to use framework that don't need to follow certain file structure. We will use the `Application ()` class to load its needed modules such as `routes`, `controllers`, `models`. The model class directly represents the table in the database. 
 
