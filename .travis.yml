@@ -11,5 +11,6 @@ php:
 before_script:
     - travis_retry composer self-update
     - travis_retry composer install --no-interaction --prefer-source --dev
+    - cd test
 
-script: ./vendor/bin/phpunit test\ApplicationTest.php
+script: ./vendor/bin/phpunit ApplicationTest.php
