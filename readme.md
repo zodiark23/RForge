@@ -1,6 +1,6 @@
 # RForge Framework (*on-going*) [![Build Status](https://travis-ci.org/zodiark23/RForge.png?branch=master)](https://travis-ci.org/zodiark23/RForge)
 
-The idea is to create an easy to use framework that don't need to follow certain file structure. We will use the `Application ()` class to load its needed modules such as `routes`, `controllers`, `models`. The model class directly represents the table in the database. 
+The idea is to create an easy to use framework for beginners. We will use the `Application ()` class to load its needed modules such as `routes`, `controllers`, `models`. The model class directly represents the table in the database. 
 
 This framework is *under development*. Will offer MVC Pattern architecture with components, and routing and ORM. Model classes will directly reflect the DB Tables.
 
@@ -16,7 +16,6 @@ This framework is *under development*. Will offer MVC Pattern architecture with 
 ### Sample application
 When you completed all the required steps above you can start creating a new application. This is a sample format of your `index.php`. Call the `require_once` line as shown below to load the framework. After that line we need to import the Application class by `use Rforge\Application;`. 
 
-**Known issues** are `$app->setTables(PathToYourModelFolder)` You must set the model with double `\\` this is still a bug and will be patched soon. Like in the example below `$app->setTables('Models\\');` if your classes are located at that directory.
 ````php
     require_once __DIR__."/vendor/autoload.php";
 
@@ -40,7 +39,9 @@ When you completed all the required steps above you can start creating a new app
 
 # Models
 
-Models directly represents the database structure. By design we can use these model to fetch data according to their structure. *Methods are not yet implemented*. To create your `model` simply create a new class then assign *properties* to that class. The class properties will be the name of the `columns` created in the database. To assign the datatype use the the `JSDOC` syntax as shown below :
+Models directly represents the database structure. _RForge tracks the changes on your models and updates the database_. The framework does not support Model Relational Database Mapping yet.
+
+To create your `model` simply create a new class then assign *properties* to that class. The class properties will be the name of the `columns` created in the database. To assign the datatype use the the `JSDOC` syntax as shown below :
 
 ````php
 class User{
@@ -58,6 +59,40 @@ class User{
 
 
 ````
+
+# Operations
+
+These class holds the database method implementation and must be inherited by your models.
+
+```php
+class User extends Operations{
+    /**
+     * @INT (10)
+     * @AUTO_INCREMENT
+     * @PRIMARY KEY
+     */
+    public $IDS;
+    /**
+     * @Text
+     */
+    public $name;
+}
+```
+## Using your models
+Some of the models return the value to the Model that trigger it. While other methods return the value as an array of that Model. Currently only two methods is supported and more methods will be available soon.
+
+Initialize your model and use the methods below:
+- selectAll(array $limit) 
+    - Returns all the value of the database
+    - TODO: customizing the query for order, group etc
+- findByID(mixed $id)
+    - Returns the row of the that matches the primary of that table
+```php
+$user = new User(); // initialize the model with operations
+$user->findByID(23); // invoke the method
+echo $user->name; //output => Alex
+```
+> Notice that you directly get the value of your query on your model. *Some methods **returns an array of the Model that triggered the method** , while others return the value directly **to the class itself***
 
 # Assigning Models path
 You must place these model on a separate folder and should be at the upmost directy. As the `filecrawler` will find other classes on these directory too.
