@@ -32,6 +32,7 @@ class Application {
 
     public function __construct($namespace){
         $this->namespace = $namespace;
+        $this->production = Config::$production;
     }
     /**
      * Start the application
@@ -75,7 +76,11 @@ class Application {
      * Then it will manage the database tables and update it accordingly
      */
     public function loadTables(string $path_to_model_directory){
-        $this->db->loadTables($path_to_model_directory, $this->namespace);
+        $locked = file_exists(".rflock");
+        if($this->production == false || ($this->production == true && $locked == false) ){
+            $this->db->loadTables($path_to_model_directory, $this->namespace);
+            $lockFile = fopen('.rflock',"w") or die("Unable to open file!");
+        }
     }
 
     /**

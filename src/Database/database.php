@@ -63,24 +63,35 @@ class Database {
      * |$app = new Application('MyAppNamespace')|
      * ------------------------------------------ */
     public function loadTables($pathToModelClass , $namespace){
-        $directory_files = FileCrawler::dir($pathToModelClass);
+        /* N/A on prod_mode */
+        $pathToModelClass = preg_replace("/(?=[\/])(.?)/","\\",preg_replace("/(?=[\/\/])(.?)/","/",$pathToModelClass."/"));
         try{
-            
+
+            $directory_files = FileCrawler::dir($pathToModelClass);
+        }catch(SystemException $sysEx){
+            $sysEx->present();
+            return false;
+        }
+        try{
+            $classList = array(); 
+            $existingTables = array_map(function($list){ foreach($list as $val){if(!empty($val)){return $val; }}} ,$this->tableList());
             foreach($directory_files as $key){
-                    $directory =  key($directory_files);
+                $directory =  key($directory_files);
                 foreach($key as $file_name){
                     $class = FileCrawler::getClassFromFile($directory.$file_name);
                     foreach ($class as $class_name) {
-                    $each_class = $namespace.'\\'.$directory.$class_name;
+                        $each_class = $namespace.'\\'.$directory.$class_name;
 
-                    // ##### MAKE THE TABLES NOW AFTER FINDING ITS PROPERTIES #####
-                    $this->createTable($each_class);
-                    // ##### RE-UPDATE STRUCTURE - N/A on prod_mode
-                    $this->updateTableStructure($each_class);
+                        
+                        array_push($classList, $each_class);
+                        
                     }
 
                 }
             }
+            // MAKE/ALTER THE TABLES NOW AFTER FINDING ITS PROPERTIES
+            $this->updateTableSchema($classList, $existingTables);
+            
         } catch(Exception $e){
             throw new SystemException("Cannot find directory");
         }
@@ -116,5 +127,36 @@ class Database {
         //UPDATING QUERY
         $stmt = $this->connection->prepare("ALTER TABLE ". $z->className . " " . $query_string);
         $stmt->execute();
+     }
+
+
+     public function tableList(){
+        $stmt = $this->connection->prepare("SHOW TABLES");
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+     }
+
+
+     private function updateTableSchema($new, $existing){
+        $tableList = $new;
+        $new = array_map(function($list){
+                    $z = Resolver::resolve($list);
+                    return strtolower($z->className);
+                },
+                $new);
+        asort($new);
+        asort($existing);
+        $mapper = new SchemaMapper(array_values($new), array_values($existing));
+        
+        foreach($mapper->structure() as $query_string){
+            $stmt = $this->connection->prepare($query_string[0]??"");
+            $stmt->execute();
+        }
+
+        foreach($tableList as $table){
+            $this->createTable($table);
+            $this->updateTableStructure($table);
+        }
      }
 }

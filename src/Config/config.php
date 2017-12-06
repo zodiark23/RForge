@@ -16,6 +16,7 @@ class Config{
                 "charset"=>"utf8",
                 "driver"=>"mysql"
             ];
+    public static $production = false;
 
     public static $dbname;
     /**

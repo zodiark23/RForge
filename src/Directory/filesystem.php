@@ -1,4 +1,5 @@
 <?php namespace RForge\Directory;
+use RForge\Exception\SystemException;
 /**
  * File Operation Class
  * Provides various methods for dealing system level schenanigans
@@ -9,6 +10,10 @@ class FileSystem{
      * Which contains the file names under that directory
      */
     public static function dir($directory){
+        $x = is_dir($directory);
+        if($x == false){
+            throw new SystemException("Cannot find the specified file");
+        }
         $dir = array_diff(scandir($directory), array(".",".."));
         $list[$directory] = $dir;
         return $list;

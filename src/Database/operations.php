@@ -30,7 +30,7 @@ class Operations {
      */
     private $primary_key;
 
-    public function __construct(){
+    final public function __construct(){
         $this->temp = $this;
         $this->me = Resolver::self_resolve($this);
 
@@ -86,7 +86,7 @@ class Operations {
      * @param array $value - The value to be assign on this class
      * @return void
      */
-    private function selfAssign(array $value){
+    public function selfAssign(array $value){
         array_map(function($value,$key){$this->temp->{$key} = $value;},$value,array_keys($value));
     }
 
